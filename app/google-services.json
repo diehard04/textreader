@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "57048983799",
+    "firebase_url": "https://textreader-effae.firebaseio.com",
+    "project_id": "textreader-effae",
+    "storage_bucket": "textreader-effae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:57048983799:android:7f9f5afc189d5aa5418bf2",
+        "android_client_info": {
+          "package_name": "com.example.textreader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "57048983799-6qrk20p17pgr4qhctfmpi5khqqiufrra.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4UJQjmdzPYEAuOnEM_9N6LyrCJb2XTSc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "57048983799-6qrk20p17pgr4qhctfmpi5khqqiufrra.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
