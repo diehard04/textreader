@@ -37,22 +37,24 @@
         android:id="@+id/extracted_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:weightSum="1"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
         android:gravity="center"
-        >
+        android:orientation="horizontal">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_weight=".5"
             android:id="@+id/select_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Select Image"
-            android:layout_marginRight="20dp"/>
-        <Button
-            android:id="@+id/checkText"
+            android:text="open Camera" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_weight=".5"
+            android:id="@+id/chose_from_galary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check the text" />
+            android:text="open galary" />
 
     </LinearLayout>
 

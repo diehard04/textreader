@@ -61,7 +61,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         myTextView = view.findViewById(R.id.textView);
         myImageView = view.findViewById(R.id.imageView);
-        view.findViewById(R.id.checkText).setOnClickListener(this);
+        view.findViewById(R.id.chose_from_galary).setOnClickListener(this);
         view.findViewById(R.id.select_image).setOnClickListener(this);
         return view;
     }
@@ -102,7 +102,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.checkText:
+            case R.id.chose_from_galary:
                 if (myBitmap != null) {
                     runTextRecognition();
                 }
