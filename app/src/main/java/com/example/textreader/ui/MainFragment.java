@@ -1,16 +1,19 @@
 package com.example.textreader.ui;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,11 +40,13 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
 
 import java.io.File;
+import java.security.Permission;
 
 import static android.app.Activity.RESULT_OK;
 
 public class MainFragment extends Fragment implements View.OnClickListener{
 
+    private static final int OPEN_CAMERA = 101;
     private MainViewModel mViewModel;
     private Bitmap myBitmap;
     private ImageView myImageView;
@@ -103,6 +108,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.chose_from_galary:
+                checkPermission(OPEN_CAMERA);
                 if (myBitmap != null) {
                     runTextRecognition();
                 }
@@ -192,7 +198,6 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         switch (requestCode) {
             case WRITE_STORAGE:
                 int hasWriteExternalStoragePermission = ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
                 //If we have access to external storage...//
                 if (hasWriteExternalStoragePermission == PackageManager.PERMISSION_GRANTED) {
                     //...call selectPicture, which launches an Activity where the user can select an image//
@@ -203,7 +208,20 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, requestCode);
                 }
                 break;
+            case OPEN_CAMERA:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, requestCode);
+                    } else {
+                        openCamera();
+                    }
+                } else {
+                    openCamera();
+                }
         }
+    }
+
+    private void openCamera() {
     }
 
 
