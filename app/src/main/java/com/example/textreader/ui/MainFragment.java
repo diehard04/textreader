@@ -54,6 +54,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     public static final int WRITE_STORAGE = 100;
     public static final int SELECT_PHOTO = 102;
     public File photo;
+    private static final int REQUEST_CODE = 103;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -99,7 +100,6 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                         myImageView.setImageBitmap(myBitmap);
                     }
                     break;
-
             }
         }
     }
@@ -222,6 +222,9 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     }
 
     private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, SELECT_PHOTO);
+
     }
 
 
