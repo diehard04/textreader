@@ -100,13 +100,24 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     }
                     scanImage();
                     break;
+                case OPEN_CAMERA:
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    myTextView.setText(null);
+                    myImageView.setImageBitmap(photo);
+                    scanImageFromCamra(photo);
+                    break;
             }
         }
     }
 
+    private void scanImageFromCamra(Bitmap photo) {
+        runTextRecognition(photo);
+
+    }
+
     private void scanImage() {
         if (myBitmap != null) {
-            runTextRecognition();
+            runTextRecognition(myBitmap);
         }
     }
 
@@ -122,8 +133,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void runTextRecognition() {
-        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(myBitmap);
+    private void runTextRecognition(Bitmap bitmap) {
+        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
         FirebaseVisionTextDetector detector = FirebaseVision.getInstance().getVisionTextDetector();
         detector.detectInImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
             @Override
@@ -231,7 +242,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, SELECT_PHOTO);
+        startActivityForResult(intent, OPEN_CAMERA);
     }
 
 
