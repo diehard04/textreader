@@ -1,4 +1,4 @@
-package com.example.textreader.ui;
+package com.diehard04.textreader.ui;
 
 import androidx.lifecycle.ViewModel;
 

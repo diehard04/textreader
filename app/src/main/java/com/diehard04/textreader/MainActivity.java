@@ -1,4 +1,4 @@
-package com.example.textreader;
+package com.diehard04.textreader;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.textreader.ui.MainFragment;
+import com.diehard04.textreader.ui.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
 

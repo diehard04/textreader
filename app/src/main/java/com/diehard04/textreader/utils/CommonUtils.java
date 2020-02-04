@@ -1,4 +1,4 @@
-package com.example.textreader.utils;
+package com.diehard04.textreader.utils;
 
 import android.content.Context;
 import android.database.Cursor;

@@ -1,4 +1,4 @@
-package com.example.textreader;
+package com.diehard04.textreader;
 
 import org.junit.Test;
 
