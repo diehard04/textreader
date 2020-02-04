@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/rl"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
     tools:context=".MainActivity">
@@ -10,7 +10,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/extracted_text">
+        android:layout_above="@+id/extracted_text"
+        android:scrollIndicators="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,12 +23,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
-                android:src="@drawable/ic_text" />
+                android:src="@drawable/image_to_text" />
 
-            <TextView
+            <EditText
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_15"
+                android:inputType="none"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         </LinearLayout>
@@ -38,23 +41,30 @@
         android:id="@+id/extracted_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="1">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/open_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
+            android:layout_weight=".4"
+            android:background="@color/colorPrimary"
             android:text="open Camera" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight=".2" />
+
         <androidx.appcompat.widget.AppCompatButton
-            android:layout_weight=".5"
             android:id="@+id/open_galary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight=".4"
+            android:background="@color/colorPrimary"
             android:text="open galary" />
 
     </LinearLayout>

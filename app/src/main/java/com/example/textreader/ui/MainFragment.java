@@ -2,6 +2,7 @@ package com.example.textreader.ui;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
@@ -19,11 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +42,10 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -48,16 +55,31 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private MainViewModel mViewModel;
     private Bitmap myBitmap;
     private ImageView myImageView;
-    private TextView myTextView;
+    private EditText myTextView;
     public static final int WRITE_STORAGE = 100;
     public static final int SELECT_PHOTO = 102;
     public File photo;
     private View mRoot;
+    private String currentPhotoPath;
 
     public static MainFragment newInstance() {
         return new MainFragment();
     }
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
 
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -80,7 +102,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case WRITE_STORAGE:
@@ -101,18 +123,19 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     scanImage();
                     break;
                 case OPEN_CAMERA:
-                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    Uri uri = Uri.fromFile(new File(currentPhotoPath));
+                    Bitmap photoBitmap = null;
+                    try {
+                        photoBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver() , uri);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     myTextView.setText(null);
-                    myImageView.setImageBitmap(photo);
-                    scanImageFromCamra(photo);
+                    myImageView.setImageBitmap(photoBitmap);
+                    runTextRecognition(photoBitmap);
                     break;
             }
         }
-    }
-
-    private void scanImageFromCamra(Bitmap photo) {
-        runTextRecognition(photo);
-
     }
 
     private void scanImage() {
@@ -241,8 +264,25 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void openCamera() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, OPEN_CAMERA);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getContext(),
+                        "com.example.android.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, OPEN_CAMERA);
+            }
+        }
     }
 
 
