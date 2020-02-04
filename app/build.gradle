@@ -11,6 +11,8 @@ android {
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //key store password = diehard04
+        //key alias password = diehard04
     }
     buildTypes {
         release {
