@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProviders;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -29,22 +28,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.textreader.MainActivity;
 import com.example.textreader.R;
 import com.example.textreader.utils.CommonUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
 
 import java.io.File;
-import java.security.Permission;
 
 import static android.app.Activity.RESULT_OK;
 
-public class MainFragment extends Fragment implements View.OnClickListener{
+public class MainFragment extends Fragment implements View.OnClickListener {
 
     private static final int OPEN_CAMERA = 101;
     private MainViewModel mViewModel;
@@ -54,7 +52,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     public static final int WRITE_STORAGE = 100;
     public static final int SELECT_PHOTO = 102;
     public File photo;
-    private static final int REQUEST_CODE = 103;
+    private View mRoot;
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -67,8 +65,9 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.main_fragment, container, false);
         myTextView = view.findViewById(R.id.textView);
         myImageView = view.findViewById(R.id.imageView);
-        view.findViewById(R.id.chose_from_galary).setOnClickListener(this);
-        view.findViewById(R.id.select_image).setOnClickListener(this);
+        mRoot = view.findViewById(R.id.rl);
+        view.findViewById(R.id.open_camera).setOnClickListener(this);
+        view.findViewById(R.id.open_galary).setOnClickListener(this);
         return view;
     }
 
@@ -81,7 +80,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        //super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case WRITE_STORAGE:
@@ -99,21 +98,25 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                         myTextView.setText(null);
                         myImageView.setImageBitmap(myBitmap);
                     }
+                    scanImage();
                     break;
             }
+        }
+    }
+
+    private void scanImage() {
+        if (myBitmap != null) {
+            runTextRecognition();
         }
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.chose_from_galary:
+            case R.id.open_camera:
                 checkPermission(OPEN_CAMERA);
-                if (myBitmap != null) {
-                    runTextRecognition();
-                }
                 break;
-            case R.id.select_image:
+            case R.id.open_galary:
                 checkPermission(WRITE_STORAGE);
                 break;
         }
@@ -155,7 +158,6 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case WRITE_STORAGE:
-
                 //If the permission request is granted, then...//
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //...call selectPicture//
@@ -166,7 +168,13 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                     requestPermission(getActivity(), requestCode, "plese give access to your galary");
                 }
                 break;
-
+            case OPEN_CAMERA:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openCamera();
+                } else {
+                    Snackbar snackbar = Snackbar.make(mRoot, "plese give access to your galary", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
         }
     }
 
@@ -211,7 +219,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
             case OPEN_CAMERA:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA}, requestCode);
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, requestCode);
                     } else {
                         openCamera();
                     }
@@ -224,7 +232,6 @@ public class MainFragment extends Fragment implements View.OnClickListener{
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, SELECT_PHOTO);
-
     }
 
 
