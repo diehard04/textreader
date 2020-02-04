@@ -38,7 +38,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.File;
 import java.io.IOException;
@@ -156,11 +156,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void runTextRecognition(Bitmap bitmap) {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
-        FirebaseVisionTextDetector detector = FirebaseVision.getInstance().getVisionTextDetector();
-        detector.detectInImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+        FirebaseVisionTextRecognizer recognizer = FirebaseVision.getInstance().getCloudTextRecognizer();
+        recognizer.processImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
             @Override
-            public void onSuccess(FirebaseVisionText texts) {
-                processExtractedText(texts);
+            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                processExtractedText(firebaseVisionText);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -175,11 +175,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     private void processExtractedText(FirebaseVisionText firebaseVisionText) {
         myTextView.setText(null);
-        if (firebaseVisionText.getBlocks().size() == 0) {
+        if (firebaseVisionText.getTextBlocks().size() == 0) {
             myTextView.setText("no text");
             return;
         }
-        for (FirebaseVisionText.Block block : firebaseVisionText.getBlocks()) {
+        for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
             myTextView.append(block.getText());
 
         }
@@ -275,7 +275,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(getContext(),
-                        "com.example.android.fileprovider",
+                        "com.diehard04.android.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, OPEN_CAMERA);
