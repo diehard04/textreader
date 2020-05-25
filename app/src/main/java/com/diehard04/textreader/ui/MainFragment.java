@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,16 +35,16 @@ import com.diehard04.textreader.R;
 import com.diehard04.textreader.utils.CommonUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
-import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -63,6 +64,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     public static MainFragment newInstance() {
         return new MainFragment();
     }
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -78,6 +80,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -124,7 +127,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                     Uri uri = Uri.fromFile(new File(currentPhotoPath));
                     Bitmap photoBitmap = null;
                     try {
-                        photoBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver() , uri);
+                        photoBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -142,6 +145,36 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private void runTextRecognition(Bitmap myBitmap) {
+        FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBitmap(myBitmap);
+        FirebaseVisionTextDetector firebaseVisionTextDetector = FirebaseVision.getInstance().getVisionTextDetector();
+        firebaseVisionTextDetector.detectInImage(firebaseVisionImage).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+            @Override
+            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+                processExtractedText(firebaseVisionText);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("onFail= ", e.getMessage());
+                Toast.makeText(getActivity(), "Exception = " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void processExtractedText(FirebaseVisionText firebaseVisionText) {
+        List<FirebaseVisionText.Block> blockList = firebaseVisionText.getBlocks();
+        if (blockList.size() == 0) {
+            myTextView.setText(null);
+            Toast.makeText(getActivity(), "No Text Found On This Image", Toast.LENGTH_SHORT).show();
+        } else {
+            for (FirebaseVisionText.Block block : firebaseVisionText.getBlocks()) {
+                String text = block.getText();
+                myTextView.setText(text);
+            }
+        }
+    }
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -154,36 +187,36 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void runTextRecognition(Bitmap bitmap) {
-        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
-        FirebaseVisionTextRecognizer recognizer = FirebaseVision.getInstance().getCloudTextRecognizer();
-        recognizer.processImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
-            @Override
-            public void onSuccess(FirebaseVisionText firebaseVisionText) {
-                processExtractedText(firebaseVisionText);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure
-                    (@NonNull Exception exception) {
-                System.out.println(exception);
-                Toast.makeText(getContext(),
-                        "Exception", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    private void processExtractedText(FirebaseVisionText firebaseVisionText) {
-        myTextView.setText(null);
-        if (firebaseVisionText.getTextBlocks().size() == 0) {
-            myTextView.setText("no text");
-            return;
-        }
-        for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
-            myTextView.append(block.getText());
-
-        }
-    }
+//    private void runTextRecognition(Bitmap bitmap) {
+//        FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(bitmap);
+//        FirebaseVisionTextRecognizer recognizer = FirebaseVision.getInstance().getCloudTextRecognizer();
+//        recognizer.processImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
+//            @Override
+//            public void onSuccess(FirebaseVisionText firebaseVisionText) {
+//                processExtractedText(firebaseVisionText);
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure
+//                    (@NonNull Exception exception) {
+//                System.out.println(exception);
+//                Toast.makeText(getContext(),
+//                        "Exception", Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
+//
+//    private void processExtractedText(FirebaseVisionText firebaseVisionText) {
+//        myTextView.setText(null);
+//        if (firebaseVisionText.getTextBlocks().size() == 0) {
+//            myTextView.setText("no text");
+//            return;
+//        }
+//        for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks()) {
+//            myTextView.append(block.getText());
+//
+//        }
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -204,8 +237,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openCamera();
                 } else {
-                    Snackbar snackbar = Snackbar.make(mRoot, "plese give access to your galary", Snackbar.LENGTH_LONG);
-                    snackbar.show();
+//                    Snackbar snackbar = Snackbar.make(mRoot, "plese give access to your galary", Snackbar.LENGTH_LONG);
+//                    snackbar.show();
                 }
         }
     }

@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "490788545198",
-    "firebase_url": "https://text-reader-a8957.firebaseio.com",
-    "project_id": "text-reader-a8957",
-    "storage_bucket": "text-reader-a8957.appspot.com"
+    "project_number": "217424635699",
+    "firebase_url": "https://textrecognition-a3168.firebaseio.com",
+    "project_id": "textrecognition-a3168",
+    "storage_bucket": "textrecognition-a3168.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:490788545198:android:7fbc87d92f92931584c33f",
+        "mobilesdk_app_id": "1:217424635699:android:123724f072bafb33874046",
         "android_client_info": {
           "package_name": "com.diehard04.textreader"
         }
       },
       "oauth_client": [
         {
-          "client_id": "490788545198-j08bq41h7eqhp359lqpf01anbne0efs8.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.diehard04.textreader",
-            "certificate_hash": "905d030cd9f7eeb74f7285de782b571c28021c02"
-          }
-        },
-        {
-          "client_id": "490788545198-ja8sp9utggl0ab320f2fpmed04iu9l8n.apps.googleusercontent.com",
+          "client_id": "217424635699-umb19hum2nr9fqdingmfvh8e48tdgdo1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDkbdCPpvlzGZeft-YSB6TypbRSFHMBdjQ"
+          "current_key": "AIzaSyAC5SmGoLQ5z59JFtfe92qAcM4gjZfhwdU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "490788545198-ja8sp9utggl0ab320f2fpmed04iu9l8n.apps.googleusercontent.com",
+              "client_id": "217424635699-umb19hum2nr9fqdingmfvh8e48tdgdo1.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

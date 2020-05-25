@@ -33,14 +33,14 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     // add the Firebase SDK for Google Analytics
-    //implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-analytics:15.0.2'
     // add SDKs for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
     /// your exiciting dependencies
-    implementation "com.google.android.material:material:1.2.0-alpha04"
-    implementation 'com.google.firebase:firebase-core:17.2.2'
-    implementation 'com.google.firebase:firebase-ml-vision:24.0.1'
-    implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.1'
+    //implementation "com.google.android.material:material:1.2.0-alpha04"
+    //implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.google.firebase:firebase-ml-vision:15.0.0'
+    //implementation 'com.google.firebase:firebase-ml-model-interpreter:22.0.1'
 }
 // Add to the bottom of the file
 apply plugin: 'com.google.gms.google-services'

@@ -20,6 +20,9 @@
         <activity
             android:name="com.diehard04.textreader.MainActivity"
             android:windowSoftInputMode="stateHidden">
+            <meta-data
+                android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+                android:value="ocr" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,9 +30,7 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="ocr" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.diehard04.android.fileprovider"
